@@ -28,4 +28,4 @@ This is because it will create a `runtime/` directory one level above itself, e.
 │  ├─ package.json
 ├─ runtime/
 │  ├─ cache/
-│  ├─ log/```
+│  ├─ log/
