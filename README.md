@@ -13,3 +13,15 @@ Written in Typescript, using `node.js` and `discord.js`
 - [ ] View leaderboard command
 - [ ] Get players' tiers command
 - [ ] Get commands to run at end of month command
+
+To run the bot, place the entire directory within another `gexp-bot/` directory.
+This is because it will create a `runtime/` directory one level above itself, e.g.
+
+gexp-bot/
+├─ bot/
+│  ├─ build/
+│  ├─ src/
+│  ├─ package.json
+├─ runtime/
+│  ├─ cache/
+│  ├─ log/
