@@ -21,7 +21,8 @@ Written in Typescript, using `node.js` and `discord.js`
 To run the bot, place the entire directory within another `gexp-bot/` directory.
 This is because it will create a `runtime/` directory one level above itself, e.g.
 
-```gexp-bot/
+```
+gexp-bot/
 ├─ bot/
 │  ├─ build/
 │  ├─ src/
@@ -29,3 +30,4 @@ This is because it will create a `runtime/` directory one level above itself, e.
 ├─ runtime/
 │  ├─ cache/
 │  ├─ log/
+```
