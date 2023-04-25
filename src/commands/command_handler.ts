@@ -1,6 +1,7 @@
 import { Message } from "discord.js";
 import { TestCommand } from "./impl/command_test";
 import { Command } from "./abstract_command";
+import { LogType, logger } from "../log/logger";
 
 const PREFIX: string = (process.env.PREFIX == undefined ? "error!" : process.env.PREFIX);
 const commandObject: Map<string, Command> = new Map<string, Command>();
@@ -13,6 +14,8 @@ export function initCommands(): void {
 
 export function dispatchCommand(discordMsg: Message): void {
     if(!discordMsg.content.startsWith(PREFIX)) return; // This is not a command for the bot
+
+    logger(LogType.INFO, "User \"" + discordMsg.author.tag + "\" executed command: \"" + discordMsg.content + "\"");
 
     let commandParts: Array<string> = stripPrefix(discordMsg.content).split(" ");
     let command: string | undefined = commandParts.shift();
