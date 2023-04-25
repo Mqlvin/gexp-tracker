@@ -1,4 +1,4 @@
-import { closeSync, existsSync, openSync, readFileSync, writeSync } from "fs";
+import { appendFileSync, closeSync, existsSync, openSync, readFileSync, writeSync } from "fs";
 import { CACHE_DIR, PLAYERDATA_DIR, RUNTIME_DIR } from "./directories";
 
 export const MC_NAME_CACHE_FILE: string = CACHE_DIR + "/minecraft-username-cache.json";
@@ -32,4 +32,8 @@ export function writeString(path: string, contents: string): void {
     let fd = openSync(path, "w", 0o666);
     writeSync(fd, contents);
     closeSync(fd);
+}
+
+export function appendString(path: string, dataToAppend: string): void {
+    appendFileSync(path, dataToAppend);
 }

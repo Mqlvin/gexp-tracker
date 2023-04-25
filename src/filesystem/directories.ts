@@ -4,12 +4,14 @@ export const RUNTIME_DIR: string = "../runtime";
 
 export const CACHE_DIR: string = RUNTIME_DIR + "/cache";
 export const PLAYERDATA_DIR: string = RUNTIME_DIR + "/player-data";
+export const LOG_DIR: string = RUNTIME_DIR + "/log"
 
 // Creates all folders - called on program startup
 export function createRuntimeDirectories(): void {
     mkdirIfNotExist(RUNTIME_DIR);
     mkdirIfNotExist(CACHE_DIR);
     mkdirIfNotExist(PLAYERDATA_DIR);
+    mkdirIfNotExist(LOG_DIR);
 }
 
 // Creates a folder
