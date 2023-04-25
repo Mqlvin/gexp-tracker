@@ -1,0 +1,29 @@
+{
+  "name": "cloudy-bot",
+  "version": "1.0.0",
+  "description": "A Discord bot to track GEXP for the Cloudy Days guild.",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "npm run build && node -r dotenv/config ./build/index.js"
+  },
+  "author": "Mqlvin",
+  "license": "MIT",
+  "dependencies": {
+    "@discordjs/builders": "^1.6.1",
+    "@discordjs/rest": "^1.7.0",
+    "@types/node": "^18.16.0",
+    "discord-api-types": "^0.37.39",
+    "discord.js": "^14.9.0",
+    "dotenv": "^16.0.3",
+    "fs": "^0.0.1-security",
+    "inversify": "^6.0.1",
+    "node-fetch": "^3.3.1",
+    "reflect-metadata": "^0.1.13",
+    "typescript": "^5.0.4"
+  },
+  "devDependencies": {
+    "@types/node": "^18.16.0",
+    "typescript": "^5.0.4"
+  }
+}
