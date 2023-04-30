@@ -3,6 +3,7 @@ import { CACHE_DIR, PLAYERDATA_DIR, RUNTIME_DIR } from "./directories";
 
 export const MC_NAME_CACHE_FILE: string = CACHE_DIR + "/minecraft-username-cache.json";
 export const PLAYER_DATA_FILE: string = PLAYERDATA_DIR + "/%UUID%/data.json";
+export const PLAYER_HISTORY_FILE: string = PLAYERDATA_DIR + "/%UUID%/history.json";
 
 // Creates the file only if it doesn't already exist
 // Returns true if the file was created, false if the file exists
@@ -29,6 +30,8 @@ export function readFileIntoArray(path: string): Array<string> {
 }
 
 export function writeString(path: string, contents: string): void {
+    if(!existsSync(path)) createFile(path, "");
+
     let fd = openSync(path, "w", 0o666);
     writeSync(fd, contents);
     closeSync(fd);

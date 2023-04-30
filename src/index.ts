@@ -9,8 +9,8 @@ import { LogType, logger, loggerStartup } from "./log/logger";
 const client: Client = new Client( {intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent]} );
 
 function bootupSync(): void {
-    loggerStartup();
     createRuntimeDirectories(); // create directories for cache files (in case not already made?)
+    loggerStartup();
 
     player_dbStartup(); // read and load files/cache
     hypixelStartup(); // read and load files/cache

@@ -27,7 +27,7 @@ export function logger(type: LogType, content: string): void {
 
 
 
-// Returns dd.mm.yyyy
+// Returns dd-mm-yyyy
 function getFormattedDate(): string {
     let reversed = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '').split(" ")[0];
     // reversed is now equal to 2012-11-04
