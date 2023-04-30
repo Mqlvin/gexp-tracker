@@ -12,7 +12,7 @@ Written in Typescript, using `node.js` and `discord.js`
 
 ### Commands
 - [ ] View player command
-- [ ] View leaderboard command
+- [x] View leaderboard command
 - [ ] Get players' tiers command
 - [ ] Get commands to run at end of month command
 
