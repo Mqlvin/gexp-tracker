@@ -8,7 +8,7 @@ Written in Typescript, using `node.js` and `discord.js`
 ### General work
 - [x] Name/UUID requesting and caching
 - [x] Logging
-- [ ] Hypixel API requester
+- [x] Hypixel API requester
 
 ### Commands
 - [ ] View player command
