@@ -14,6 +14,10 @@ export function createRuntimeDirectories(): void {
     mkdirIfNotExist(LOG_DIR);
 }
 
+export function createPlayerDirectory(uuid: string): void {
+    mkdirIfNotExist(PLAYERDATA_DIR + "/" + uuid);
+}
+
 // Creates a folder
 function mkdirIfNotExist(path: string): void {
     if(!existsSync(path)) mkdirSync(path);
