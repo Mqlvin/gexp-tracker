@@ -69,15 +69,64 @@ function exportToHistory(uuid: string, playerObj: any): void {
 
 
 
-
+// Returns a specific players data
 export function getPlayerData(uuid: string): any | undefined {
     if(PLAYER_OBJECTS.has(uuid)) return PLAYER_OBJECTS.get(uuid);
     else return undefined;
 }
 
+// Returns all of todays player data as an array
 export function getAllPlayersData(): Array<any> {
     return Array.from(PLAYER_OBJECTS.values());
 }
+
+// Returns the weekly GEXP of a player - GEXP from the last 7 days
+export function getAccumulatedWeeklyGexp(uuid: string): number {
+    let playerHistory: any = JSON.parse(readFile(PLAYER_HISTORY_FILE.replace("%UUID%", uuid)));
+    if(playerHistory == undefined) return 0;
+    let dates: Array<string> = Object.keys(playerHistory);
+
+    // larger than or equal to, because the 7th day is the data we already have today (so get 6 days from history)
+    while(dates.length >= 7) {
+        dates.shift();
+    }
+
+    // now we have 6 dates, lets add together all the gexp
+    let totalGexp: number = 0;
+    dates.forEach(dateKey => {
+        totalGexp += playerHistory[dateKey]["gexpEarned"];
+    });
+    totalGexp += PLAYER_OBJECTS.get(uuid)["totalGexpToday"];
+
+    return totalGexp;
+}
+
+// Returns the monthly GEXP of a player - GEXP from the last 30 days
+export function getAccumulatedMonthlyGexp(uuid: string): number {
+    let playerHistory: any = JSON.parse(readFile(PLAYER_HISTORY_FILE.replace("%UUID%", uuid)));
+    if(playerHistory == undefined) return 0;
+    let dates: Array<string> = Object.keys(playerHistory);
+
+    // larger than or equal to, because the 7th day is the data we already have today (so get 6 days from history)
+    while(dates.length >= 30) {
+        dates.shift();
+    }
+
+    // now we have 6 dates, lets add together all the gexp
+    let totalGexp: number = 0;
+    dates.forEach(dateKey => {
+        totalGexp += playerHistory[dateKey]["gexpEarned"];
+    });
+    totalGexp += PLAYER_OBJECTS.get(uuid)["totalGexpToday"];
+
+    return totalGexp;
+}
+
+// Returns all players' UUIDs in the guild
+export function getAllUUIDs(): Array<string> {
+    return Array.from(Object.keys(PLAYER_OBJECTS));
+}
+
 
 
 
