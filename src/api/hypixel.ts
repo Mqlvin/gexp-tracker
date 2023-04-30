@@ -15,7 +15,3 @@ export async function getGuildData(key: string, guildId: string): Promise<any | 
 
     return response;
 }
-
-function saveGuildData(): void {
-    
-}
