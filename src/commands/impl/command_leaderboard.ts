@@ -68,7 +68,7 @@ export class LeaderboardCommand extends Command {
             // build the embed
             let embed: EmbedBuilder = new EmbedBuilder()
 	            .setColor(0x3FB6B6)
-	            .setTitle("GEXP Leaderboard - " + (type == "monthly" ? "Last Month" : "Last Week") + " \u1CBC\u1CBC\u1CBC\u1CBC\u1CBC") // `\u1CBC` is invisible character
+	            .setTitle("GEXP Leaderboard - For the last " + (type == "monthly" ? "month" : "week")) // no need for invisible characters (longer)
 	            .setDescription(leaderboardMessageBuilder)
 	            .setTimestamp(new Date())
 	            .setFooter({ text: "GEXP Tracker" });

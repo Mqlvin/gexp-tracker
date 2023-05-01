@@ -29,14 +29,16 @@ export function logger(type: LogType, content: string): void {
 
 // Returns dd-mm-yyyy
 function getFormattedDate(): string {
-    let reversed = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '').split(" ")[0];
+    var dateEst = new Date(); dateEst.setHours(dateEst.getHours() - 4); // Date as EST timezone
+    let reversed = dateEst.toISOString().replace(/T/, ' ').replace(/\..+/, '').split(" ")[0];
     // reversed is now equal to 2012-11-04
 
     return reversed.split("-").reverse().join("-");
 }
 
 function getLogTime(): string {
-    let isoString = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '').replace("-", "/").replace("-", "/"); // '2023/25/04 20:09:53'
+    var dateEst = new Date(); dateEst.setHours(dateEst.getHours() - 4); // Date as EST timezone
+    let isoString = dateEst.toISOString().replace(/T/, ' ').replace(/\..+/, '').replace("-", "/").replace("-", "/"); // '2023/25/04 20:09:53'
 
     return isoString.split(" ").reverse().join(" ");
 }

@@ -3,7 +3,6 @@ import { createFile, PLAYER_HISTORY_FILE, PLAYER_DATA_FILE, readFile, writeStrin
 import { getUsername } from "../player_db";
 
 const PLAYER_OBJECTS: Map<string, any> = new Map<string, any>();
-const FOURS_HOURS_PAST_MIDNIGHT_IN_MINS = 60 * 4;
 
 /* Takes in an object like this:
 
@@ -34,15 +33,17 @@ export async function savePlayer(uuid: string, playerData: any): Promise<void> {
     }
 
     // Needs to be updated: if after 4am and lastHistoryUpdate day is yesterday.
-    else if(PLAYER_OBJECTS.has(uuid) && playerData["lastHistoryStore"] + 1 == getCurrentDay() && getMinutesPastMidnight() > FOURS_HOURS_PAST_MIDNIGHT_IN_MINS) {
+    else if(PLAYER_OBJECTS.has(uuid) && playerData["lastHistoryStore"] + 1 == getCurrentDay()) {
         exportToHistory(uuid, PLAYER_OBJECTS.get(uuid));
+        playerData["lastHistoryStore"] = getCurrentDay();
     }
 
     let playerDataFile: string = PLAYER_DATA_FILE.replace("%UUID%", uuid);
     
     let obj: any = PLAYER_OBJECTS.get(uuid);
     obj["uuid"] = uuid;
-    obj["lastUpdated"] = Math.floor(Date.now() / 1000);
+    // obj["lastUpdated"] = Math.floor(Date.now() / 1000);
+    // Removed as currently unused
     obj["totalGexpToday"] = playerData["expHistory"] [Object.keys(playerData["expHistory"])[0]] ;
     obj["currentUsername"] = await getUsername(uuid);
     obj["curentRank"] = playerData["rank"];
@@ -133,12 +134,14 @@ export function getAllUUIDs(): Array<string> {
 
 // Gets current day in month, e.g. 1st, 26th
 function getCurrentDay(): number {
-    return parseInt(new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '').split(" ")[0].split("-")[2]);
+    var dateEst = new Date(); dateEst.setHours(dateEst.getHours() - 4); // Date as EST timezone
+    return parseInt(dateEst.toISOString().replace(/T/, ' ').replace(/\..+/, '').split(" ")[0].split("-")[2]);
 }
 
 // Returns e.g. 10:14am; 614
 function getMinutesPastMidnight(): number {
-    let arr: string[] = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '').split(" ")[1].split(":");
+    var dateEst = new Date(); dateEst.setHours(dateEst.getHours() - 4); // Date as EST timezone
+    let arr: string[] = dateEst.toISOString().replace(/T/, ' ').replace(/\..+/, '').split(" ")[1].split(":");
 
     return parseInt(arr[0]) * 60 + parseInt(arr[1]);
 }
@@ -146,7 +149,8 @@ function getMinutesPastMidnight(): number {
 // Returns dd-mm-yyyy
 // Duplicate function in "./log/logger.ts"
 function getFormattedDate(): string {
-    let reversed = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '').split(" ")[0];
+    var dateEst = new Date(); dateEst.setHours(dateEst.getHours() - 4); // Date as EST timezone
+    let reversed = dateEst.toISOString().replace(/T/, ' ').replace(/\..+/, '').split(" ")[0];
     // reversed is now equal to 2012-11-04
 
     return reversed.split("-").reverse().join("-");
