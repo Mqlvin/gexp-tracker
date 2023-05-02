@@ -1,7 +1,6 @@
 import { Message } from "discord.js";
 import { Command } from "../abstract_command";
-import { getAccumulatedMonthlyGexp, getAccumulatedWeeklyGexp, getAllPlayersData, getAllUUIDs } from "../../api/player_handler/player_handler";
-import { LogType, logger } from "../../log/logger";
+import { getMonthlyGexp, getAccumulatedWeeklyGexp, getAllPlayersData, getAllUUIDs } from "../../api/player_handler/player_handler";
 import { EmbedBuilder } from "@discordjs/builders";
 
 export class LeaderboardCommand extends Command {
@@ -47,7 +46,7 @@ export class LeaderboardCommand extends Command {
 
             // all uuids of players, for each add their uuid->gexp
             playerUUIDs.forEach(uuid => {
-                uuidToGexp.set(uuid, (type == "monthly" ? getAccumulatedMonthlyGexp(uuid) : getAccumulatedWeeklyGexp(uuid)));
+                uuidToGexp.set(uuid, (type == "monthly" ? getMonthlyGexp(uuid, false) : getAccumulatedWeeklyGexp(uuid)));
             });
 
             // we've got the map sorted by gexp

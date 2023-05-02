@@ -88,7 +88,7 @@ export function getAccumulatedWeeklyGexp(uuid: string): number {
     let dates: Array<string> = Object.keys(playerHistory);
 
     // larger than or equal to, because the 7th day is the data we already have today (so get 6 days from history)
-    while(dates.length >= 7) {
+    while(dates.length > 6) {
         dates.shift();
     }
 
@@ -102,18 +102,29 @@ export function getAccumulatedWeeklyGexp(uuid: string): number {
     return totalGexp;
 }
 
-// Returns the monthly GEXP of a player - GEXP from the last 30 days
-export function getAccumulatedMonthlyGexp(uuid: string): number {
+// Returns the monthly GEXP of a player
+// If accumulated, the GEXP will be totalled from the last 30 days
+// If not accumulated, the GEXP will be totalled from the start of the month (1st)
+export function getMonthlyGexp(uuid: string, accumulated: boolean): number {
     let playerHistory: any = JSON.parse(readFile(PLAYER_HISTORY_FILE.replace("%UUID%", uuid)));
     if(playerHistory == undefined) return 0;
     let dates: Array<string> = Object.keys(playerHistory);
 
-    // larger than or equal to, because the 7th day is the data we already have today (so get 6 days from history)
-    while(dates.length >= 30) {
-        dates.shift();
+    // larger than or equal to, because the 30th day is the data we already have today (so get 29 days from history)
+    if(accumulated) {
+        while(dates.length > 29) {
+            dates.shift();
+        }
+    } else {
+        let dayToday = getCurrentDay();
+        // say the day is 26th, we will get the last 25 days (n - 1) + today
+        while(dates.length > dayToday - 1) {
+            dates.shift();
+        }
     }
+    
 
-    // now we have 6 dates, lets add together all the gexp
+    // now we have all the dates, lets add together all the gexp
     let totalGexp: number = 0;
     dates.forEach(dateKey => {
         totalGexp += playerHistory[dateKey]["gexpEarned"];
