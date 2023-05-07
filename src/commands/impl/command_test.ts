@@ -1,9 +1,13 @@
 import { Message } from "discord.js";
 import { Command } from "../abstract_command";
-import { getUUID } from "../../api/player_db";
+import { requestGuildDataAndUpdatePlayers } from "../../api/player_handler/request_scheduler";
 
 export class TestCommand extends Command {
     async onExecute(args: string[], discordMsg: Message): Promise<void> {
-        discordMsg.reply("UUID: " + await getUUID(args[0]));
+        if(args[0].toLowerCase() == "exporthistory") {
+            let msg = discordMsg.reply("Force exporting guild history data...");
+            await requestGuildDataAndUpdatePlayers(true);
+            (await msg).edit("Exported all guild history data!")
+        }
     }
 }
