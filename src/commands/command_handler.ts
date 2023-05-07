@@ -3,6 +3,7 @@ import { TestCommand } from "./impl/command_test";
 import { Command } from "./abstract_command";
 import { LogType, logger } from "../log/logger";
 import { LeaderboardCommand } from "./impl/command_leaderboard";
+import { TiersCommand } from "./impl/command_tiers";
 
 const PREFIX: string = (process.env.PREFIX == undefined ? "error!" : process.env.PREFIX);
 const commandObject: Map<string, Command> = new Map<string, Command>();
@@ -12,6 +13,7 @@ const commandObject: Map<string, Command> = new Map<string, Command>();
 export function initCommands(): void {
     commandObject.set("test", new TestCommand());
     commandObject.set("lb", new LeaderboardCommand());
+    commandObject.set("tiers", new TiersCommand());
 }
 
 export function dispatchCommand(discordMsg: Message): void {
