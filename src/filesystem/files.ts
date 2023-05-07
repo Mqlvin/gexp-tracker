@@ -21,6 +21,7 @@ export function createFile(path: string, initialisingContent: string): boolean {
 
 // Returns file contents as string
 export function readFile(path: string): string {
+    if(!existsSync(path)) return "";
     return readFileSync(path, { encoding: "utf8", flag: "r"});
 }
 
