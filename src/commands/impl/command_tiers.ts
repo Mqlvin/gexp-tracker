@@ -23,7 +23,8 @@ export class TiersCommand extends Command {
             }
         });
 
-        
+        // staff names to ignore
+        let staffNamesToIgnore = process.env.STAFFLIST?.split(",").map(name => name.toLocaleLowerCase());
 
         // the categories for the embed
         let playerCategoriesForMessage = Object.keys(rankToPlayers);
@@ -32,7 +33,7 @@ export class TiersCommand extends Command {
         for(let i: number = 0; i < playerCategoriesForMessage.length; i++) {
             let needToAddExtraBreakline: boolean = true;
             if(rankToPlayers[playerCategoriesForMessage[i]][0] != "%") {
-                messageContent += "\n\n\n**" + playerCategoriesForMessage[i] + " (no change)**\n";
+                messageContent += "\n\n\n**" + playerCategoriesForMessage[i] + " (don't change)**\n";
                 needToAddExtraBreakline = false;
             }
 
@@ -40,9 +41,11 @@ export class TiersCommand extends Command {
 
             let noChange: boolean = true;
             rankToPlayers[playerCategoriesForMessage[i]].forEach(player => {
+                if(staffNamesToIgnore?.includes(player.toLocaleLowerCase())) return;
+
                 if(player == "%" && rankToPlayers[playerCategoriesForMessage[i]][rankToPlayers[playerCategoriesForMessage[i]].length - 1] != "%") {
                     noChange = false;
-                    messageContent += (needToAddExtraBreakline ? "\n" : "") + "\n\n**" + playerCategoriesForMessage[i] + " (change)**\n";
+                    messageContent += (needToAddExtraBreakline ? "\n" : "") + "\n\n**" + playerCategoriesForMessage[i] + (playerCategoriesForMessage[i] == "Kick" ? "" : " (change)") + "**\n";
                     return;
                 }
 
