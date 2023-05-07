@@ -3,6 +3,8 @@ A Discord bot to track players' GEXP for my guild.
 
 Written in Typescript, using `node.js` and `discord.js`
 
+Sorry the code is well commented, but quite patchy. I didn't think out anything before I started writing it which usually leads to a messy codebase.
+
 <br><br>
 
 ### General work
@@ -13,7 +15,7 @@ Written in Typescript, using `node.js` and `discord.js`
 ### Commands
 - [ ] View player command
 - [x] View leaderboard command
-- [ ] Get players' tiers command
+- [x] Get players' tiers command
 - [ ] Get commands to run at end of month command
 
 <br><br>
