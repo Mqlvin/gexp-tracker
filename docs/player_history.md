@@ -41,19 +41,19 @@ When data is pushed to history, it should be pushed in an object, with a key as 
     "29-04-2023": {
         "username":"Mqlvin",
         "timeLastUpdated":"03:59",
-        "gexpEarned":24128,
+        "gexp":24128,
         "rank":"Tier 2",
     },
     "30-04-2023": {
         "username":"Mqlvin",
         "timeLastUpdated":"03:59",
-        "gexpEarned":0,
+        "gexp":0,
         "rank":"Tier 1",
     },
     "1-05-2023": {
         "username":"Mqlvin",
         "timeLastUpdated":"03:52",
-        "gexpEarned":5829,
+        "gexp":5829,
         "rank":"Tier 1",
     }
 }
