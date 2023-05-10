@@ -166,7 +166,7 @@ export function getMonthlyGexp(uuid: string, accumulated: boolean): number {
 
 // Returns all players' UUIDs in the guild
 export function getAllUUIDs(): Array<string> {
-    return Array.from(Object.keys(PLAYER_OBJECTS));
+    return Array.from(PLAYER_OBJECTS.keys());
 }
 
 
