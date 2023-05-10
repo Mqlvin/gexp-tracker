@@ -1,5 +1,5 @@
 import { appendFileSync, closeSync, existsSync, openSync, readFileSync, writeSync } from "fs";
-import { CACHE_DIR, PLAYERDATA_DIR, RUNTIME_DIR } from "./directories";
+import { CACHE_DIR, PLAYERDATA_DIR } from "./directories";
 
 export const MC_NAME_CACHE_FILE: string = CACHE_DIR + "/minecraft-username-cache.json";
 export const PLAYER_DATA_FILE: string = PLAYERDATA_DIR + "/%UUID%/data.json";
