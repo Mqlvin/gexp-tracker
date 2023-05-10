@@ -13,10 +13,9 @@ Sorry the code is well commented, but quite patchy. I didn't think out anything 
 - [x] Hypixel API requester
 
 ### Commands
-- [ ] View player command
 - [x] View leaderboard command
 - [x] Get players' tiers command
-- [ ] Get commands to run at end of month command
+- [x] Get certain commands to run at end of month
 
 <br><br>
 
