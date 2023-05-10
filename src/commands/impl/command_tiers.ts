@@ -1,11 +1,21 @@
-import { Message } from "discord.js";
+import { Channel, Message, TextChannel } from "discord.js";
 import { Command } from "../abstract_command";
 import { getAllPlayersData, getMonthlyGexp } from "../../api/player_handler/player_handler";
 import { EmbedBuilder } from "@discordjs/builders";
 
 export class TiersCommand extends Command {
     async onExecute(args: string[], discordMsg: Message): Promise<void> {
-        let players: Array<any> = getAllPlayersData();
+        if(!discordMsg.member?.roles.cache.find(role => role.id == process.env.ADMIN_RANK_ID!) && !discordMsg.member?.roles.cache.find(role => role.id == process.env.DEV_RANK_ID!)) return;
+
+        // console.log((discordMsg.member?.roles.cache.find(role => role.id == process.env.ADMIN_RANK_ID!)) ? "true" : "false");
+        // console.log((discordMsg.member?.roles.cache.find(role => role.id == process.env.DEV_RANK_ID!)) ? "true" : "false");
+
+        sendTiersMessage(discordMsg.channel);
+    }
+}
+
+export function sendTiersMessage(channel: Channel): void {
+    let players: Array<any> = getAllPlayersData();
         let gexpRequirements: Array<number> = Object.keys(TIER_REQUIREMENTS).map(item => {
             return parseInt(item, 10)
         });
@@ -65,8 +75,7 @@ export class TiersCommand extends Command {
 	            .setTimestamp(new Date())
 	            .setFooter({ text: "GEXP Tracker" });
 
-        discordMsg.channel.send({ embeds: [ embed ] });
-    }
+        if(channel instanceof TextChannel) channel.send({ embeds: [ embed ] });
 }
 
 

@@ -2,6 +2,7 @@ import { Message } from "discord.js";
 import { Command } from "../abstract_command";
 import { getMonthlyGexp, getAccumulatedWeeklyGexp, getAllPlayersData, getAllUUIDs } from "../../api/player_handler/player_handler";
 import { EmbedBuilder } from "@discordjs/builders";
+import { getUsername } from "../../api/player_db";
 
 export class LeaderboardCommand extends Command {
     async onExecute(args: string[], discordMsg: Message): Promise<void> {
@@ -51,8 +52,16 @@ export class LeaderboardCommand extends Command {
 
             // we've got the map sorted by gexp
             let mapSorted: Map<string, number> = new Map([...uuidToGexp.entries()].sort((a, b) => b[1] - a[1]));
+
             let names: Array<string> = Array.from(mapSorted.keys());
+            if(names == undefined || names.length == 0) return;
+            for(let i: number = 0; i < names.length; i++) {
+                let name = await getUsername(names[i]);
+                names[i] = (name == undefined ? "`null`" : name);
+            }
+
             let gexpValues: Array<number> = Array.from(mapSorted.values());
+
 
             // generate the body of the embed as a string
             let leaderboardMessageBuilder: string = "";
