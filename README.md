@@ -16,6 +16,7 @@ Sorry the code is well commented, but quite patchy. I didn't think out anything 
 - [x] View leaderboard command
 - [x] Get players' tiers command
 - [x] Get certain commands to run at end of month
+- [x] View player overview command
 
 <br><br>
 
