@@ -6,9 +6,8 @@ import { getUsername } from "../../api/player_db";
 
 export class LeaderboardCommand extends Command {
     async onExecute(args: string[], discordMsg: Message): Promise<void> {
-        // TODO: Weekly and monthly
         if(args.length == 0) {
-            discordMsg.channel.send("Incorrect usage.\nTry " + process.env.PREFIX + "lb <daily/weekly/monthly>");
+            discordMsg.channel.send("Incorrect usage.\nTry " + process.env.PREFIX + "`lb <daily/weekly/monthly>`");
             return;
         }
 

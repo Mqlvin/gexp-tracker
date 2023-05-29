@@ -171,6 +171,40 @@ export function getMonthlyGexp(uuid: string, accumulated: boolean): number {
     return totalGexp;
 }
 
+export function getMonthlyGexpEntries(uuid: string, accumulated: boolean): number[] {
+    let playerHistory: any = undefined;
+    try {
+        playerHistory = JSON.parse(readFile(PLAYER_HISTORY_FILE.replace("%UUID%", uuid)));
+        if(playerHistory == undefined) return [];
+    } catch(ex) {
+        logger(LogType.ERROR, "Error while `getMonthlyGexpEntries()` for `" + uuid + "`. Accumulated: `" + accumulated + "`: \n" + ex);
+        return [];
+    }
+    let dates: Array<string> = Object.keys(playerHistory);
+
+    // larger than or equal to, because the 30th day is the data we already have today (so get 29 days from history)
+    if(accumulated) {
+        while(dates.length > 29) {
+            dates.shift();
+        }
+    } else {
+        let dayToday = getCurrentDay();
+        // say the day is 26th, we will get the last 25 days (n - 1) + today
+        while(dates.length > dayToday - 1) {
+            dates.shift();
+        }
+    }
+    
+    // now we have all the dates, lets add together all the gexp
+    let entries: number[] = [];
+    dates.forEach(dateKey => {
+        entries.push(playerHistory[dateKey]["gexp"]);
+    });
+    entries.push(PLAYER_OBJECTS.get(uuid)["totalGexpToday"]);
+
+    return entries;
+}
+
 // Returns all players' UUIDs in the guild
 export function getAllUUIDs(): Array<string> {
     return Array.from(PLAYER_OBJECTS.keys());
