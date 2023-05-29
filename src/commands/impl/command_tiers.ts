@@ -5,7 +5,9 @@ import { EmbedBuilder } from "@discordjs/builders";
 
 export class TiersCommand extends Command {
     async onExecute(args: string[], discordMsg: Message): Promise<void> {
-        if(!discordMsg.member?.roles.cache.find(role => role.id == process.env.ADMIN_RANK_ID!) && !discordMsg.member?.roles.cache.find(role => role.id == process.env.DEV_RANK_ID!)) return;
+        if(!discordMsg.member?.roles.cache.find(role => role.id == process.env.ADMIN_RANK_ID!)
+        && !discordMsg.member?.roles.cache.find(role => role.id == process.env.DEV_RANK_ID!)
+        && !discordMsg.member?.roles.cache.find(role => role.id == process.env.CLOUDY_RANK_ID!)) return;
 
         // console.log((discordMsg.member?.roles.cache.find(role => role.id == process.env.ADMIN_RANK_ID!)) ? "true" : "false");
         // console.log((discordMsg.member?.roles.cache.find(role => role.id == process.env.DEV_RANK_ID!)) ? "true" : "false");
@@ -16,30 +18,38 @@ export class TiersCommand extends Command {
 
 export function sendTiersMessage(channel: Channel): void {
     let players: Array<any> = getAllPlayersData();
-        let gexpRequirements: Array<number> = Object.keys(TIER_REQUIREMENTS).map(item => {
-            return parseInt(item, 10)
-        });
 
-        let rankToPlayers: { [rank: string]: string[] } = {};
-        players.forEach(player => {
-            let rankToPlayersKey = getTierFromGexp(player, getMonthlyGexp(player["uuid"], false), gexpRequirements);
-            if(!Object.keys(rankToPlayers).includes(rankToPlayersKey)) rankToPlayers[rankToPlayersKey] = ["%"]; // initialise an array if there isn't one already
+    let gexpRequirements: Array<number> = Object.keys(TIER_REQUIREMENTS).map(item => {
+        return parseInt(item, 10)
+    });
 
-            // Anything in a list before the % doesn't need changing. Anything after the % in the list needs changing.
-            if(player["currentRank"] == rankToPlayersKey) {
-                rankToPlayers[rankToPlayersKey].unshift(player["currentUsername"]);
-            } else {
-                rankToPlayers[rankToPlayersKey].push(player["currentUsername"]);
-            }
-        });
+
+    let rankToPlayers: { [rank: string]: string[] } = {};
+
+    players.forEach(player => {
+        let monthlyGexp = getMonthlyGexp(player["uuid"], false);
+
+        // if(player["currentRank"] == "Veteran" && !(monthlyGexp < 50000)) return;
+
+        let rankToPlayersKey = getTierFromGexp(player, monthlyGexp, gexpRequirements);
+        if(!Object.keys(rankToPlayers).includes(rankToPlayersKey)) rankToPlayers[rankToPlayersKey] = ["%"]; // initialise an array if there isn't one already
+
+        // Anything in a list before the % doesn't need changing. Anything after the % in the list needs changing.
+        if(player["currentRank"] == rankToPlayersKey) {
+            rankToPlayers[rankToPlayersKey].unshift(player["currentUsername"] + (player["currentRank"] == "Veteran" ? " (V)" : ""));
+        } else {
+            rankToPlayers[rankToPlayersKey].push(player["currentUsername"] + (player["currentRank"] == "Veteran" ? " (V)" : ""));
+        }
+    });
 
         // staff names to ignore
-        let staffNamesToIgnore = process.env.STAFFLIST?.split(",").map(name => name.toLocaleLowerCase());
+        let staffNamesToIgnore = process.env.STAFFLIST?.split(",").map(name => name.toLowerCase());
 
         // the categories for the embed
-        let playerCategoriesForMessage = Object.keys(rankToPlayers);
+        let playerCategoriesForMessage = Object.keys(rankToPlayers).sort(); // so its in order kick -> tier -> veteran
         let messageContent: string = "";
         
+        // for every category
         for(let i: number = 0; i < playerCategoriesForMessage.length; i++) {
             let needToAddExtraBreakline: boolean = true;
             if(rankToPlayers[playerCategoriesForMessage[i]][0] != "%") {
@@ -48,25 +58,29 @@ export function sendTiersMessage(channel: Channel): void {
             }
 
             
-
             let noChange: boolean = true;
+            // for every player in the embed, add the name
             rankToPlayers[playerCategoriesForMessage[i]].forEach(player => {
                 if(staffNamesToIgnore?.includes(player.toLocaleLowerCase())) return;
 
                 if(player == "%" && rankToPlayers[playerCategoriesForMessage[i]][rankToPlayers[playerCategoriesForMessage[i]].length - 1] != "%") {
                     noChange = false;
-                    messageContent += (needToAddExtraBreakline ? "\n" : "") + "\n\n**" + playerCategoriesForMessage[i] + (playerCategoriesForMessage[i] == "Kick" ? "" : " (change)") + "**\n";
+                    messageContent += (needToAddExtraBreakline ? "\n" : "") + "\n\n**" + playerCategoriesForMessage[i] + (playerCategoriesForMessage[i] == "Kick" || "Veteran" ? "" : " (change)") + "**\n";
                     return;
-                }
+                } else if(player == "%") return;
+                
 
                 messageContent += "`" + player + "` "
             });
 
-            messageContent += "\n";
+            
+            // messageContent += "\n";
+            // if you want an extra spacing between everything
 
 
             // after 100 trial and errors, this message has been formatted correctly. DONT TOUCH!
         }
+
 
         let embed: EmbedBuilder = new EmbedBuilder()
 	            .setColor(0x3FB6B6)
@@ -96,10 +110,14 @@ function getTierFromGexp(playerObj: any, gexp: number, requirements: Array<numbe
         For example, in my guild a player of 4+ month in the guild receives a "Veteran" rank.
     */
 
+    // if they're already veteran, just return veteran, as requested by guild master.
+    if(playerObj["currentRank"] == "Veteran" && gexp >= 50000) return "Veteran";
+    /*
     let fourMonthsAgo = new Date(); fourMonthsAgo.setHours(fourMonthsAgo.getHours() - (24 * 30 * 4));
-    if(playerObj["playerJoined"] > Math.floor(fourMonthsAgo.valueOf() / 1000)) {
-        // return "Veteran";
+    if(playerObj["playerJoined"] < Math.floor(fourMonthsAgo.valueOf() / 1000)) {
+        return "Veteran";
     }
+    */
 
     return TIER_REQUIREMENTS[findThreshold(requirements, gexp)];
 }

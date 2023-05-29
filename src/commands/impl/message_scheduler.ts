@@ -1,5 +1,6 @@
 import { Client } from "discord.js";
 import { sendTiersMessage } from "./command_tiers";
+import { updateAllUsernames } from "../../api/player_db";
 
 const ONE_MINUTE_IN_MILLISECONDS = 1000 * 60;
 let lastDay: number = getCurrentDay();
@@ -13,6 +14,9 @@ async function checkTime(discordClient: Client): Promise<void> {
     if(today != lastDay && today == 1) { // today is the first of the month
         let possibleChannel = await discordClient.channels.fetch(process.env.GEXP_CHANNEL!);
         if(possibleChannel == undefined || possibleChannel == null) return;
+
+        await updateAllUsernames();
+
         sendTiersMessage(possibleChannel);
     }
 }

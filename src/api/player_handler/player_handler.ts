@@ -26,7 +26,7 @@ const PLAYER_OBJECTS: Map<string, any> = new Map<string, any>();
 
     This `savePlayer()` function gets called for every player once a minute, based on the information gathered by the Hypixel API.
 */
-export async function savePlayer(uuid: string, playerData: any, forceHistoryExport: boolean): Promise<void> {
+export async function savePlayer(uuid: string, playerData: any): Promise<void> {
     // If player object doesn't exist yet.
     if(!PLAYER_OBJECTS.has(uuid)) {
         PLAYER_OBJECTS.set(uuid, {"lastHistoryStore":getCurrentDay()});
@@ -46,12 +46,14 @@ export async function savePlayer(uuid: string, playerData: any, forceHistoryExpo
     PLAYER_OBJECTS.set(uuid, obj);
 
     // Needs to be updated: if after 4am and lastHistoryUpdate day is yesterday.
-    if(PLAYER_OBJECTS.has(uuid) && playerData["lastHistoryStore"] + 1 == getCurrentDay()) {
+    /* if(PLAYER_OBJECTS.has(uuid) && playerData["lastHistoryStore"] + 1 == getCurrentDay()) {
         exportToHistory(uuid, PLAYER_OBJECTS.get(uuid), playerData);
         playerData["lastHistoryStore"] = getCurrentDay();
     } else if(forceHistoryExport) { // forced by a command
-        exportToHistory(uuid, obj, playerData);
-    }
+        exportToHistory(uuid, obj, playerData);    
+    } */
+
+    exportToHistory(uuid, obj, playerData);
 
     writeString(playerDataFile, JSON.stringify(PLAYER_OBJECTS.get(uuid)));
 }
@@ -108,8 +110,13 @@ export function getAllPlayersData(): Array<any> {
 
 // Returns the weekly GEXP of a player - GEXP from the last 7 days
 export function getAccumulatedWeeklyGexp(uuid: string): number {
-    let playerHistory: any = JSON.parse(readFile(PLAYER_HISTORY_FILE.replace("%UUID%", uuid)));
+    let playerHistory: any = readFile(PLAYER_HISTORY_FILE.replace("%UUID%", uuid));
     if(playerHistory == undefined) return 0;
+    try {
+        playerHistory = JSON.parse(playerHistory);
+    } catch {
+        return 0;
+    }
     let dates: Array<string> = Object.keys(playerHistory);
 
     // larger than or equal to, because the 7th day is the data we already have today (so get 6 days from history)

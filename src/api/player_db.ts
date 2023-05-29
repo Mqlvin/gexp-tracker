@@ -3,12 +3,12 @@ import { MC_NAME_CACHE_FILE, createFile } from "../filesystem/files";
 import { getJson } from "./requester";
 
 const PLAYERDB_ENDPOINT = "https://playerdb.co/api/player/minecraft/";
-const MILLISECONDS_IN_ONE_DAY = 1000 * 60 * 60 * 24 * 1;
+const MILLISECONDS_IN_HALF_DAY = 1000 * 60 * 60 * 12 * 1;
 
 let mcNameCache: Array<any> = [];
 
 // Called on program startup
-// MC_NAME_CACHE_FILE - {"uuid":"73b0cc9alf93", "username":"Mqlvin", "cached":16909000(unix-seconds)}
+// MC_NAME_CACHE_FILE - {"uuid":"73b0cc9alf93...", "username":"Mqlvin", "cached":16909000(unix-seconds)}
 export function player_dbStartup(): void {
     let newFileCreated: boolean = createFile(MC_NAME_CACHE_FILE, "[]");
     // create a new file if one doesn't already exist
@@ -70,6 +70,7 @@ async function fetchUsername(uuid: string): Promise<string | undefined> {
     // if the cache is expired, we must fetch the data from playerdb
     if(isCacheExpired(playerObj)) {
         let newData: any = await requestUpstreamUsername(uuid, true);
+        playerObj["cached"] = Date.now() / 1000;
         // since the `playerObj` variable may be different to the fresh data just fetched, we must return the data directly provided by the method.
         return newData["username"];
     }
@@ -93,7 +94,7 @@ async function fetchUUID(username: string): Promise<string | undefined> {
 // Returns true if the cache for a player object is expired, based on current time
 // Player object is an object within mcNameCache
 function isCacheExpired(playerObj: any): boolean {
-    return playerObj["cached"] + MILLISECONDS_IN_ONE_DAY < Date.now();
+    return playerObj["cached"] + MILLISECONDS_IN_HALF_DAY < Date.now();
 }
 
 // Takes UUID or username
@@ -120,4 +121,12 @@ export async function getUUID(username: string): Promise<string | undefined> {
 // Public method to get player username from UUID
 export async function getUsername(uuid: string): Promise<string | undefined> {
     return await fetchUsername(uuid);
+}
+
+// Updates all players usernames
+// Called once a month
+export async function updateAllUsernames() {
+    mcNameCache.forEach(async (cacheObj: any) => {
+        cacheObj["username"] = await requestUpstreamUsername(cacheObj["uuid"], true);
+    });
 }
