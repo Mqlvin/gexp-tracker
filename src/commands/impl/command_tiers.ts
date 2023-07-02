@@ -97,14 +97,14 @@ export function sendTiersMessage(channel: Channel): void {
 
 // These are the requirements and the corresponding ranks for my guild. You can change this.
 // You can add more ranks and requirements, as many as you would like.
-const TIER_REQUIREMENTS: { [tier: number]: string } = {
+export const TIER_REQUIREMENTS: { [tier: number]: string } = {
     0: "Kick",
     50000: "Tier 1",
     300000: "Tier 2",
     600000: "Tier 3"
 };
 
-function getTierFromGexp(playerObj: any, gexp: number, requirements: Array<number>): string {
+export function getTierFromGexp(playerObj: any, gexp: number, requirements: Array<number>): string {
     /*
         This is where you can change any special rules for a player.
         For example, in my guild a player of 4+ month in the guild receives a "Veteran" rank.

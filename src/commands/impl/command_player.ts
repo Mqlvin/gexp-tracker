@@ -3,6 +3,7 @@ import { Command } from "../abstract_command";
 import { EmbedBuilder } from "@discordjs/builders";
 import { getUUID } from "../../api/player_db";
 import { getMonthlyGexp, getMonthlyGexpEntries, getPlayerData } from "../../api/player_handler/player_handler";
+import { TIER_REQUIREMENTS, getTierFromGexp } from "./command_tiers";
 
 export class PlayerCommand extends Command {
     async onExecute(args: string[], discordMsg: Message): Promise<void> {
@@ -27,11 +28,18 @@ export class PlayerCommand extends Command {
             return;
         }
         let fields = [];
+        
+        // code to get requirements for tiers (for projected tier)
+        let gexpRequirements: Array<number> = Object.keys(TIER_REQUIREMENTS).map(item => {
+            return parseInt(item, 10)
+        });
+        let gexpThisMonth = getMonthlyGexp(uuid, false);
+        let nextTier = playerData["currentRank"] == "Guild Master" ? "Guild Master" : playerData["currentRank"] == "Admin" ? "Admin" : getTierFromGexp(playerData, gexpThisMonth, gexpRequirements);
 
         let embed: EmbedBuilder = new EmbedBuilder()
 	            .setColor(0x3FB6B6)
 	            .setTitle("Player Overview") // no need for invisible characters (longer)
-	            .setDescription("Tier: `" + playerData["currentRank"] + "`\nUUID: `" + playerData["uuid"] + "`\nGEXP this month: `" + getMonthlyGexp(uuid, false) + "`")
+	            .setDescription("Username: `" + playerData["currentUsername"] +"`\nTier: `" + playerData["currentRank"] + "`\nNext Tier: `" + nextTier + "`\nGEXP This Month: `" + gexpThisMonth + "`")
 	            .setTimestamp(new Date())
 	            .setFooter({ text: "GEXP Tracker" });
 
