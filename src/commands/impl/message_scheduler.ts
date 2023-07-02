@@ -2,11 +2,11 @@ import { Client } from "discord.js";
 import { sendTiersMessage } from "./command_tiers";
 import { updateAllUsernames } from "../../api/player_db";
 
-const ONE_MINUTE_IN_MILLISECONDS = 1000 * 60;
+const FIVE_MINUTE_IN_MILLISECONDS = 1000 * 60 * 5;
 let lastDay: number = getCurrentDay();
 
 export function schedule(discordClient: Client): void {
-    setInterval(() => { checkTime(discordClient) }, ONE_MINUTE_IN_MILLISECONDS);
+    setInterval(() => { checkTime(discordClient) }, FIVE_MINUTE_IN_MILLISECONDS);
 }
 
 async function checkTime(discordClient: Client): Promise<void> {
