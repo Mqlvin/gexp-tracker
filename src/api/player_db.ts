@@ -44,6 +44,14 @@ async function requestUpstreamUsername(playerId: string, wantUsername: boolean):
         }
     }
 
+    // remove all prior instances of caching
+    for(let i = 0; i < mcNameCache.length; i++) {
+        if(mcNameCache[i].uuid == response["data"]["player"]["raw_id"]) {
+            mcNameCache.splice(i, 1);
+            i--;
+        }
+    }
+
     // if the player was not in the mcNameCache, no object would've been updated, so we must add the player now
     mcNameCache.push(newPlayerObject);
 
