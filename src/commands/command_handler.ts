@@ -6,6 +6,7 @@ import { LeaderboardCommand } from "./impl/command_leaderboard";
 import { TiersCommand } from "./impl/command_tiers";
 import { HelpCommand } from "./impl/command_help";
 import { PlayerCommand } from "./impl/command_player";
+import { VeteranCommand } from "./impl/command_vets";
 
 const PREFIX: string = (process.env.PREFIX == undefined ? "error!" : process.env.PREFIX);
 const commandObject: Map<string, Command> = new Map<string, Command>();
@@ -18,6 +19,7 @@ export function initCommands(): void {
     commandObject.set("tiers", new TiersCommand());
     commandObject.set("player", new PlayerCommand());
     commandObject.set("help", new HelpCommand());
+    commandObject.set("vets", new VeteranCommand())
 }
 
 export function dispatchCommand(discordMsg: Message): void {
